@@ -12,7 +12,7 @@ define('DB_HOST',   getenv('DB_HOST')   ?: 'db.ngkazhrdemwvpubwvaxa.supabase.co'
 define('DB_PORT',   getenv('DB_PORT')   ?: '5432');
 define('DB_NAME',   getenv('DB_NAME')   ?: 'postgres');
 define('DB_USER',   getenv('DB_USER')   ?: 'postgres');
-define('DB_PASS',   getenv('DB_PASS')   ?: 'REPLACE_WITH_SUPABASE_DB_PASSWORD');
+define('DB_PASS',   getenv('DB_PASS')   ?: 'prakut.com@@');
 
 /* ---------------- Security & JWT ---------------- */
 define('JWT_SECRET',  getenv('JWT_SECRET')  ?: 'prakut_crm_cms_super_secret_jwt_key_2026_9884306922');
