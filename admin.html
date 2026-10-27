@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prakut Admin Platform | CRM & CMS Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #1B7D3C;
+      --primary-dark: #145E2D;
+      --primary-light: #2BA052;
+      --soil: #5D3A1A;
+      --sage: #A8D5BA;
+      --sage-light: #EBF5F0;
+      --bg: #F5F7F4;
+      --sidebar: #13221B;
+      --card: #FFFFFF;
+      --text: #1C2421;
+      --muted: #5F6B65;
+      --border: #DFE5DF;
+      --accent: #C6923B;
+      --danger: #D32F2F;
+      --warning: #ED6C02;
+      --success: #2E7D32;
+      --info: #0288D1;
+      --radius: 10px;
+      --shadow: 0 4px 18px rgba(19, 34, 27, 0.06);
+      --transition: 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'IBM Plex Sans', -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
+
+    /* --- Sidebar --- */
+    .sidebar {
+      width: 270px;
+      background: var(--sidebar);
+      color: #fff;
+      padding: 24px 16px;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.12);
+      overflow-y: auto;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 14px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 9px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(27,125,60,0.4);
+    }
+    .brand h2 { font-family: 'Fraunces', serif; font-size: 1.28rem; font-weight: 700; line-height: 1.1; }
+    .brand small { font-size: 0.72rem; color: var(--sage); letter-spacing: 0.08em; text-transform: uppercase; font-family: 'IBM Plex Mono', monospace; display: block; }
+
+    /* Module Switcher Pills in Sidebar */
+    .module-pill-box {
+      display: flex;
+      background: rgba(255,255,255,0.06);
+      padding: 4px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .module-pill-btn {
+      flex: 1;
+      padding: 7px 0;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: none;
+      background: none;
+      color: rgba(255,255,255,0.65);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .module-pill-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    .menu { list-style: none; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .menu-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); margin: 14px 10px 4px; font-family: 'IBM Plex Mono', monospace; }
+    .menu li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      color: rgba(255,255,255,0.72);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    .menu li a:hover {
+      background: rgba(27, 125, 60, 0.22);
+      color: #fff;
+      transform: translateX(3px);
+    }
+    .menu li.active a {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(27,125,60,0.35);
+    }
+    .menu li a i { width: 18px; text-align: center; font-size: 0.95rem; }
+
+    .sidebar-footer {
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+    .user-meta strong { display: block; font-size: 0.85rem; color: #fff; }
+    .user-meta small { color: rgba(255,255,255,0.5); font-size: 0.72rem; }
+    .btn-site-link { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; padding: 8px; border-radius: 6px; text-decoration: none; }
+    .btn-site-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* --- Main Container --- */
+    .main {
+      margin-left: 270px;
+      flex: 1;
+      padding: 28px 36px 60px;
+      min-width: 0;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 26px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .topbar h1 { font-family: 'Fraunces', Georgia, serif; font-size: 1.7rem; color: var(--text); font-weight: 700; }
+    .topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: 'IBM Plex Mono', monospace;
+      background: #E8F5E9;
+      color: #2E7D32;
+      border: 1px solid #C8E6C9;
+    }
+    .status-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: #2E7D32; box-shadow: 0 0 6px rgba(46,125,50,0.6); }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-secondary { background: #fff; border-color: var(--border); color: var(--text); }
+    .btn-secondary:hover { background: var(--bg); border-color: #cbd5cb; }
+    .btn-sm { padding: 5px 10px; font-size: 0.8rem; border-radius: 6px; }
+
+    /* --- KPI Grid --- */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .kpi-card {
+      background: var(--card);
+      padding: 20px 22px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+    .kpi-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+    .kpi-title { font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .kpi-val { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1; }
+    .kpi-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .kpi-green { background: var(--sage-light); color: var(--primary); }
+    .kpi-soil { background: #F6EEE7; color: var(--soil); }
+    .kpi-gold { background: #FEF6E8; color: var(--accent); }
+    .kpi-blue { background: #E8F4FD; color: var(--info); }
+
+    /* --- Content Tabs --- */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- Tables --- */
+    .table-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .card-header h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+    .filter-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .search-input {
+      padding: 7px 12px 7px 32px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.86rem;
+      background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') 10px center no-repeat;
+    }
+    .search-input:focus { outline: none; border-color: var(--primary); }
+    select.filter-select {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.86rem;
+      background: #fff;
+      cursor: pointer;
+    }
+    select.filter-select:focus { outline: none; border-color: var(--primary); }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    table.data-table th {
+      background: #FAFCFA;
+      padding: 12px 18px;
+      font-size: 0.78rem;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    table.data-table td {
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    table.data-table tbody tr:hover { background: #FAFCFA; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+    }
+    .badge-new { background: #E8F4FD; color: #0369A1; }
+    .badge-contacted { background: #FEF3C7; color: #B45309; }
+    .badge-qualified { background: #DCFCE7; color: #15803D; }
+    .badge-converted { background: #E0E7FF; color: #4338CA; }
+    .badge-nurture { background: #F3E8FF; color: #7E22CE; }
+    .badge-closed_lost, .badge-disqualified { background: #FEE2E2; color: #B91C1C; }
+    .badge-requested { background: #FEF3C7; color: #B45309; }
+    .badge-scheduled { background: #E0F2FE; color: #0369A1; }
+    .badge-completed { background: #DCFCE7; color: #15803D; }
+    .badge-published { background: #DCFCE7; color: #15803D; }
+    .badge-draft { background: #FEF3C7; color: #B45309; }
+
+    /* --- CMS Editor Form --- */
+    .cms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+    }
+    .form-control {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 0.9rem;
+      background: #fff;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(27,125,60,0.12); }
+    textarea.form-control { resize: vertical; min-height: 80px; }
+
+    /* Media Grid */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
+    .media-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      transition: var(--transition);
+    }
+    .media-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .media-thumb {
+      height: 120px;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .media-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .media-meta { padding: 10px; font-size: 0.78rem; color: var(--muted); }
+    .media-meta strong { display: block; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(3px);
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+    }
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 { font-family: 'Fraunces', serif; font-size: 1.25rem; }
+    .btn-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); }
+    .modal-body { padding: 22px 24px; }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #FAFCFA;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      padding: 12px 18px;
+      border-radius: 8px;
+      background: #13221B;
+      color: #fff;
+      font-size: 0.88rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideIn 0.3s ease;
+    }
+    .toast-success { border-left: 4px solid var(--primary-light); }
+    .toast-error { border-left: 4px solid var(--danger); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    @media(max-width: 900px) {
+      .sidebar { width: 70px; padding: 18px 8px; }
+      .sidebar .brand h2, .sidebar .brand small, .sidebar .menu li a span, .sidebar .menu-header, .sidebar .user-meta, .module-pill-box { display: none; }
+      .sidebar .menu li a { justify-content: center; padding: 12px; }
+      .main { margin-left: 70px; padding: 20px; }
+      .cms-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="index.html" class="brand" title="View Public Website">
+      <div class="brand-logo"><i class="fa-solid fa-seedling"></i></div>
+      <div>
+        <h2>Prakut</h2>
+        <small>Cultivating Value</small>
+      </div>
+    </a>
+
+    <!-- Module Selector: CRM vs CMS -->
+    <div class="module-pill-box">
+      <button class="module-pill-btn active" id="btnModCrm" onclick="setModuleMode('crm')"><i class="fa-solid fa-users"></i> CRM</button>
+      <button class="module-pill-btn" id="btnModCms" onclick="setModuleMode('cms')"><i class="fa-solid fa-globe"></i> CMS</button>
+    </div>
+
+    <!-- Navigation Menu: Dynamically switches or groups CRM & CMS -->
+    <ul class="menu" id="sidebarMenu">
+      <!-- Section 1: Dashboard -->
+      <li class="menu-header">Overview</li>
+      <li class="active"><a onclick="switchPanel('dashboard')"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a></li>
+
+      <!-- CRM Specific Links -->
+      <li class="menu-header nav-group-crm">CRM Operations</li>
+      <li class="nav-group-crm"><a onclick="switchPanel('leads')"><i class="fa-solid fa-users"></i> <span>Leads Management</span></a></li>
+      <li class="nav-group-crm"><a onclick="switchPanel('audits')"><i class="fa-solid fa-clipboard-check"></i> <span>Farm Health Audits</span></a></li>
+      <li class="nav-group-crm"><a onclick="switchPanel('contacts')"><i class="fa-solid fa-address-book"></i> <span>Contacts & Farms</span></a></li>
+      <li class="nav-group-crm"><a onclick="switchPanel('opportunities')"><i class="fa-solid fa-briefcase"></i> <span>Sales Pipeline</span></a></li>
+
+      <!-- CMS Specific Links -->
+      <li class="menu-header nav-group-cms">CMS Content Studio</li>
+      <li class="nav-group-cms"><a onclick="switchPanel('cms-home')"><i class="fa-solid fa-pen-to-square"></i> <span>Homepage Content</span></a></li>
+      <li class="nav-group-cms"><a onclick="switchPanel('cms-services')"><i class="fa-solid fa-tractor"></i> <span>Services Catalogue</span></a></li>
+      <li class="nav-group-cms"><a onclick="switchPanel('cms-faqs')"><i class="fa-solid fa-circle-question"></i> <span>FAQs Manager</span></a></li>
+      <li class="nav-group-cms"><a onclick="switchPanel('cms-media')"><i class="fa-solid fa-images"></i> <span>Media Library</span></a></li>
+      <li class="nav-group-cms"><a onclick="switchPanel('cms-settings')"><i class="fa-solid fa-sliders"></i> <span>Site Settings</span></a></li>
+
+      <!-- System Links -->
+      <li class="menu-header">Administration</li>
+      <li><a onclick="switchPanel('logs')"><i class="fa-solid fa-clock-rotate-left"></i> <span>System Audit Logs</span></a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar" id="userAvatar">A</div>
+        <div class="user-meta">
+          <strong id="userName">Prakut Admin</strong>
+          <small id="userRole">Super Admin</small>
+        </div>
+      </div>
+      <a href="index.html" target="_blank" class="btn-site-link" title="Open Public Website"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+    </div>
+  </aside>
+
+  <!-- Main Workspace -->
+  <main class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p style="color: var(--muted); font-size: 0.88rem;">Prakut Central Management Console — Controlling CRM Inquiries and Website Content</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="status-pill"><span class="dot"></span> Backend Live (XAMPP / MySQL)</div>
+        <a href="crm.html" target="_blank" class="btn btn-secondary" title="Open CRM in separate tab"><i class="fa-solid fa-users"></i> CRM Tab</a>
+        <a href="cms.html" target="_blank" class="btn btn-secondary" title="Open CMS in separate tab"><i class="fa-solid fa-newspaper"></i> CMS Tab</a>
+        <a href="index.html" target="_blank" class="btn btn-secondary" title="Open User Website in separate tab"><i class="fa-solid fa-globe"></i> User Website</a>
+        <button class="btn btn-primary" onclick="refreshCurrentTab()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- PANEL 1: DASHBOARD -->
+    <section id="panel-dashboard" class="tab-content active">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Total Inquiries</div>
+            <div class="kpi-val" id="kpi-leads-total">0</div>
+          </div>
+          <div class="kpi-icon kpi-green"><i class="fa-solid fa-users"></i></div>
+        </div>
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">New Today</div>
+            <div class="kpi-val" id="kpi-leads-today">0</div>
+          </div>
+          <div class="kpi-icon kpi-gold"><i class="fa-solid fa-bolt"></i></div>
+        </div>
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Farm Health Audits</div>
+            <div class="kpi-val" id="kpi-audits-total">0</div>
+          </div>
+          <div class="kpi-icon kpi-soil"><i class="fa-solid fa-clipboard-check"></i></div>
+        </div>
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Active Opportunities</div>
+            <div class="kpi-val" id="kpi-opps-open">0</div>
+          </div>
+          <div class="kpi-icon kpi-blue"><i class="fa-solid fa-sack-dollar"></i></div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="table-card">
+          <div class="card-header">
+            <h3>Recent CRM Leads & Enquiries</h3>
+            <button class="btn btn-secondary btn-sm" onclick="switchPanel('leads')">View All</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Lead #</th>
+                <th>Landowner</th>
+                <th>Service</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="dash-recent-leads">
+              <tr><td colspan="4" style="text-align:center;">Loading leads...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-card">
+          <div class="card-header">
+            <h3>Recent Farm Health Audits</h3>
+            <button class="btn btn-secondary btn-sm" onclick="switchPanel('audits')">View All</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Audit #</th>
+                <th>Landowner</th>
+                <th>Location / Size</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="dash-recent-audits">
+              <tr><td colspan="4" style="text-align:center;">Loading audits...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: CRM LEADS -->
+    <section id="panel-leads" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>CRM Leads Pipeline</h3>
+          <div class="filter-bar">
+            <input type="text" class="search-input" id="leadSearch" placeholder="Search by name, phone, ref..." oninput="filterLeads()" />
+            <select class="filter-select" id="leadStatusFilter" onchange="filterLeads()">
+              <option value="All">All Statuses</option>
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="nurture">Nurture</option>
+              <option value="converted">Converted</option>
+              <option value="closed_lost">Closed Lost</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="exportLeadsCsv()"><i class="fa-solid fa-file-export"></i> Export CSV</button>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Lead #</th>
+              <th>Contact Details</th>
+              <th>Farm Details</th>
+              <th>Service Interest</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="leadsTableBody">
+            <tr><td colspan="7" style="text-align:center;">Loading leads...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 3: CRM FARM HEALTH AUDITS -->
+    <section id="panel-audits" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Farm Health Audit Requests & Schedules</h3>
+          <div class="filter-bar">
+            <input type="text" class="search-input" id="auditSearch" placeholder="Search audits..." oninput="filterAudits()" />
+            <select class="filter-select" id="auditStatusFilter" onchange="filterAudits()">
+              <option value="All">All Statuses</option>
+              <option value="requested">Requested</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Audit #</th>
+              <th>Landowner</th>
+              <th>Location & Size</th>
+              <th>Appointment Date</th>
+              <th>Assigned Auditor</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="auditsTableBody">
+            <tr><td colspan="7" style="text-align:center;">Loading audit requests...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 4: CRM CONTACTS & FARMS -->
+    <section id="panel-contacts" class="tab-content">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="table-card">
+          <div class="card-header">
+            <h3>Registered Landowner Contacts</h3>
+            <input type="text" class="search-input" id="contactSearch" placeholder="Search contacts..." oninput="loadContacts()" />
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone / Email</th>
+                <th>Farms</th>
+              </tr>
+            </thead>
+            <tbody id="contactsTableBody">
+              <tr><td colspan="3" style="text-align:center;">Loading contacts...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-card">
+          <div class="card-header">
+            <h3>Farm Asset Profiles</h3>
+            <input type="text" class="search-input" id="farmSearch" placeholder="Search farms..." oninput="loadFarms()" />
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Farm Label</th>
+                <th>Area</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody id="farmsTableBody">
+              <tr><td colspan="3" style="text-align:center;">Loading farms...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 5: CRM OPPORTUNITIES -->
+    <section id="panel-opportunities" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Sales Pipeline & Opportunities</h3>
+          <button class="btn btn-primary btn-sm" onclick="openNewOpportunityModal()"><i class="fa-solid fa-plus"></i> New Deal</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Opp #</th>
+              <th>Deal Name</th>
+              <th>Service</th>
+              <th>Estimated Value</th>
+              <th>Stage</th>
+              <th>Probability</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="oppsTableBody">
+            <tr><td colspan="7" style="text-align:center;">Loading opportunities...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 6: CMS HOMEPAGE CONTENT -->
+    <section id="panel-cms-home" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Homepage Dynamic Content Editor (Prakut.com)</h3>
+          <button class="btn btn-primary" onclick="saveHomeCms()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish Content</button>
+        </div>
+        <div style="padding: 24px;">
+          <div class="cms-grid">
+            <div>
+              <h4 style="font-family:'Fraunces', serif; margin-bottom: 16px; color: var(--primary);">Hero Headline & Messaging</h4>
+              <div class="form-group">
+                <label>Hero Eyebrow</label>
+                <input type="text" class="form-control" id="cms_hero_eyebrow" />
+              </div>
+              <div class="form-group">
+                <label>Hero Main Headline</label>
+                <input type="text" class="form-control" id="cms_hero_title" />
+              </div>
+              <div class="form-group">
+                <label>Hero Subtitle</label>
+                <textarea class="form-control" id="cms_hero_sub" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Hero Tagline</label>
+                <input type="text" class="form-control" id="cms_hero_tagline" />
+              </div>
+              <div class="form-group">
+                <label>Primary CTA Button Label</label>
+                <input type="text" class="form-control" id="cms_cta_primary_label" />
+              </div>
+              <div class="form-group">
+                <label>Secondary CTA Button Label</label>
+                <input type="text" class="form-control" id="cms_cta_secondary_label" />
+              </div>
+            </div>
+
+            <div>
+              <h4 style="font-family:'Fraunces', serif; margin-bottom: 16px; color: var(--soil);">Key Numbers (Stats Band)</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label>Stat 1 Value</label>
+                  <input type="number" class="form-control" id="cms_stat_0_val" />
+                </div>
+                <div class="form-group">
+                  <label>Stat 1 Label</label>
+                  <input type="text" class="form-control" id="cms_stat_0_lbl" />
+                </div>
+                <div class="form-group">
+                  <label>Stat 2 Value</label>
+                  <input type="number" class="form-control" id="cms_stat_1_val" />
+                </div>
+                <div class="form-group">
+                  <label>Stat 2 Label</label>
+                  <input type="text" class="form-control" id="cms_stat_1_lbl" />
+                </div>
+                <div class="form-group">
+                  <label>Stat 3 Value</label>
+                  <input type="number" class="form-control" id="cms_stat_2_val" />
+                </div>
+                <div class="form-group">
+                  <label>Stat 3 Label</label>
+                  <input type="text" class="form-control" id="cms_stat_2_lbl" />
+                </div>
+                <div class="form-group">
+                  <label>Stat 4 Value</label>
+                  <input type="number" class="form-control" id="cms_stat_3_val" />
+                </div>
+                <div class="form-group">
+                  <label>Stat 4 Label</label>
+                  <input type="text" class="form-control" id="cms_stat_3_lbl" />
+                </div>
+              </div>
+
+              <h4 style="font-family:'Fraunces', serif; margin: 20px 0 16px; color: var(--primary);">Section Headings & Banners</h4>
+              <div class="form-group">
+                <label>Story Section Headline</label>
+                <input type="text" class="form-control" id="cms_story_title" />
+              </div>
+              <div class="form-group">
+                <label>Audit Banner Headline</label>
+                <input type="text" class="form-control" id="cms_audit_banner_title" />
+              </div>
+              <div class="form-group">
+                <label>Final CTA Headline</label>
+                <input type="text" class="form-control" id="cms_final_cta_title" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 7: CMS SERVICES CATALOGUE -->
+    <section id="panel-cms-services" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Services Catalogue Management</h3>
+          <button class="btn btn-primary btn-sm" onclick="openServiceModal()"><i class="fa-solid fa-plus"></i> Add New Service</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Service Title</th>
+              <th>URL Slug</th>
+              <th>Summary</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="servicesTableBody">
+            <tr><td colspan="5" style="text-align:center;">Loading services...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 8: CMS FAQS -->
+    <section id="panel-cms-faqs" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Website FAQs Manager</h3>
+          <button class="btn btn-primary btn-sm" onclick="openAddFaqModal()"><i class="fa-solid fa-plus"></i> Add FAQ</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>Question</th>
+              <th>Answer</th>
+              <th style="width: 100px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="faqsTableBody">
+            <tr><td colspan="4" style="text-align:center;">Loading FAQs...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 9: CMS MEDIA LIBRARY -->
+    <section id="panel-cms-media" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Media Library & Asset Manager</h3>
+          <div>
+            <input type="file" id="mediaUploadInput" style="display:none;" onchange="handleMediaUpload(this)" />
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('mediaUploadInput').click()"><i class="fa-solid fa-upload"></i> Upload Media Asset</button>
+          </div>
+        </div>
+        <div class="media-grid" id="mediaGrid">
+          <p style="padding: 20px; color: var(--muted);">Loading assets...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 10: CMS SITE SETTINGS -->
+    <section id="panel-cms-settings" class="tab-content">
+      <div class="table-card" style="max-width: 720px;">
+        <div class="card-header">
+          <h3>Prakut Site Settings & Public Channels</h3>
+          <button class="btn btn-primary" onclick="saveSiteSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
+        </div>
+        <div style="padding: 24px;">
+          <div class="form-group">
+            <label>Brand Name</label>
+            <input type="text" class="form-control" id="setting_site_name" />
+          </div>
+          <div class="form-group">
+            <label>Tagline</label>
+            <input type="text" class="form-control" id="setting_tagline" />
+          </div>
+          <div class="form-group">
+            <label>Contact Phone Number</label>
+            <input type="text" class="form-control" id="setting_phone" />
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="text" class="form-control" id="setting_whatsapp" />
+          </div>
+          <div class="form-group">
+            <label>General Inquiries Email</label>
+            <input type="email" class="form-control" id="setting_email" />
+          </div>
+          <div class="form-group">
+            <label>Office Address / Headquarters</label>
+            <input type="text" class="form-control" id="setting_location" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 11: AUDIT LOGS -->
+    <section id="panel-logs" class="tab-content">
+      <div class="table-card">
+        <div class="card-header">
+          <h3>System Audit Trail</h3>
+          <button class="btn btn-secondary btn-sm" onclick="loadAuditLogs()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Action</th>
+              <th>Details</th>
+              <th>IP Address</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="logsTableBody">
+            <tr><td colspan="5" style="text-align:center;">Loading audit trail...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: LEAD DETAIL & STATUS UPDATE -->
+  <div class="modal-backdrop" id="leadModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalLeadTitle">Lead Details</h3>
+        <button class="btn-close" onclick="closeModal('leadModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editLeadId" />
+        <div class="form-group">
+          <label>Status</label>
+          <select class="form-control" id="editLeadStatus">
+            <option value="new">New</option>
+            <option value="attempting_contact">Attempting Contact</option>
+            <option value="contacted">Contacted</option>
+            <option value="qualified">Qualified</option>
+            <option value="nurture">Nurture</option>
+            <option value="converted">Converted</option>
+            <option value="disqualified">Disqualified</option>
+            <option value="closed_lost">Closed Lost</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Priority</label>
+          <select class="form-control" id="editLeadPriority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Staff Notes & Actions</label>
+          <textarea class="form-control" id="editLeadNotes" rows="3" placeholder="Add follow-up notes..."></textarea>
+        </div>
+        <div id="leadMetaDetails" style="background:#F6F8F6; padding:12px; border-radius:6px; font-size:0.85rem; line-height:1.6;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('leadModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveLeadChanges()">Save Lead Status</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AUDIT REQUEST UPDATE -->
+  <div class="modal-backdrop" id="auditModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalAuditTitle">Schedule Farm Health Audit</h3>
+        <button class="btn-close" onclick="closeModal('auditModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editAuditId" />
+        <div class="form-group">
+          <label>Audit Status</label>
+          <select class="form-control" id="editAuditStatus">
+            <option value="requested">Requested</option>
+            <option value="contact_pending">Contact Pending</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="in_progress">In Progress</option>
+            <option value="report_pending">Report Pending</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Appointment Date & Time</label>
+          <input type="datetime-local" class="form-control" id="editAuditAppointment" />
+        </div>
+        <div class="form-group">
+          <label>Assigned Lead Agronomist / Auditor</label>
+          <input type="text" class="form-control" id="editAuditAuditor" placeholder="e.g. Dr. K. Ramanathan" />
+        </div>
+        <div class="form-group">
+          <label>Audit Report Status</label>
+          <select class="form-control" id="editAuditReportStatus">
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Ready">Ready</option>
+            <option value="Delivered">Delivered</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Location & Gate Access Notes</label>
+          <textarea class="form-control" id="editAuditLocationNotes" rows="2" placeholder="Gate coordinates, landmark, terrain notes..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('auditModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveAuditChanges()">Save Schedule</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SERVICE CREATE/EDIT -->
+  <div class="modal-backdrop" id="serviceModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalServiceTitle">Add New Service</h3>
+        <button class="btn-close" onclick="closeModal('serviceModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editServiceId" />
+        <div class="form-group">
+          <label>Service Title</label>
+          <input type="text" class="form-control" id="editServiceTitle" placeholder="e.g. Precision Soil Mapping" required />
+        </div>
+        <div class="form-group">
+          <label>URL Slug</label>
+          <input type="text" class="form-control" id="editServiceSlug" placeholder="e.g. precision-soil-mapping" required />
+        </div>
+        <div class="form-group">
+          <label>Short Description</label>
+          <textarea class="form-control" id="editServiceShort" rows="2" placeholder="Brief summary for service cards..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Full Scope / Description</label>
+          <textarea class="form-control" id="editServiceFull" rows="4" placeholder="Detailed service delivery description..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Key Features (comma-separated)</label>
+          <input type="text" class="form-control" id="editServiceFeatures" placeholder="e.g. GIS survey, NPK analysis, moisture mapping" />
+        </div>
+        <div class="form-group">
+          <label>Publication Status</label>
+          <select class="form-control" id="editServiceStatus">
+            <option value="Published">Published</option>
+            <option value="Draft">Draft</option>
+            <option value="Unpublished">Unpublished</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('serviceModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveService()">Save Service</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    const API_BASE = '.';
+    let allLeads = [];
+    let allAudits = [];
+    let allServices = [];
+    let currentFaqs = [];
+    let currentHomeCms = {};
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'triangle-exclamation'}"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.remove(); }, 4000);
+    }
+
+    function setModuleMode(mode) {
+      document.getElementById('btnModCrm').classList.toggle('active', mode === 'crm');
+      document.getElementById('btnModCms').classList.toggle('active', mode === 'cms');
+
+      document.querySelectorAll('.nav-group-crm').forEach(el => {
+        el.style.display = mode === 'crm' ? '' : 'none';
+      });
+      document.querySelectorAll('.nav-group-cms').forEach(el => {
+        el.style.display = mode === 'cms' ? '' : 'none';
+      });
+
+      if (mode === 'crm') switchPanel('dashboard');
+      if (mode === 'cms') switchPanel('cms-home');
+    }
+
+    function switchPanel(panelId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.menu li').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`panel-${panelId}`);
+      if (target) target.classList.add('active');
+
+      const links = document.querySelectorAll('.menu li a');
+      links.forEach(a => {
+        if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(panelId)) {
+          a.closest('li').classList.add('active');
+        }
+      });
+
+      const titleMap = {
+        'dashboard': 'Executive Dashboard',
+        'leads': 'CRM Leads Management',
+        'audits': 'Farm Health Audits',
+        'contacts': 'Contacts & Agricultural Assets',
+        'opportunities': 'Sales Pipeline & Opportunities',
+        'cms-home': 'Homepage Content CMS',
+        'cms-services': 'Services Catalogue Management',
+        'cms-faqs': 'FAQs Content Manager',
+        'cms-media': 'Media Library Assets',
+        'cms-settings': 'Brand & Contact Settings',
+        'logs': 'System Audit Logs'
+      };
+      document.getElementById('pageTitle').textContent = titleMap[panelId] || 'Prakut Admin';
+
+      if (panelId === 'dashboard') loadDashboard();
+      if (panelId === 'leads') loadLeads();
+      if (panelId === 'audits') loadAudits();
+      if (panelId === 'contacts') { loadContacts(); loadFarms(); }
+      if (panelId === 'opportunities') loadOpportunities();
+      if (panelId === 'cms-home') loadHomeCms();
+      if (panelId === 'cms-services') loadServices();
+      if (panelId === 'cms-faqs') loadFaqsCms();
+      if (panelId === 'cms-media') loadMedia();
+      if (panelId === 'cms-settings') loadSettingsCms();
+      if (panelId === 'logs') loadAuditLogs();
+    }
+
+    function refreshCurrentTab() {
+      const active = document.querySelector('.tab-content.active');
+      if (active) {
+        const id = active.id.replace('panel-', '');
+        switchPanel(id);
+        showToast('Refreshed data from server.');
+      }
+    }
+
+    /* --- Dashboard --- */
+    async function loadDashboard() {
+      try {
+        const res = await fetch(`${API_BASE}/api_dashboard.php`);
+        const json = await res.json();
+        if (!json.success) return;
+
+        const { stats, recent_leads, recent_audits } = json;
+        document.getElementById('kpi-leads-total').textContent = stats.leads_total || 0;
+        document.getElementById('kpi-leads-today').textContent = stats.leads_today || 0;
+        document.getElementById('kpi-audits-total').textContent = stats.audits_total || 0;
+        document.getElementById('kpi-opps-open').textContent = stats.opportunities_open || 0;
+
+        const lTbody = document.getElementById('dash-recent-leads');
+        lTbody.innerHTML = (recent_leads && recent_leads.length) ? recent_leads.map(l => `
+          <tr>
+            <td><strong>${escapeHtml(l.lead_number)}</strong></td>
+            <td>${escapeHtml(l.full_name)}<br><small style="color:var(--muted)">${escapeHtml(l.phone)}</small></td>
+            <td>${escapeHtml(l.service_interest || 'General')}</td>
+            <td><span class="badge badge-${l.status}">${l.status}</span></td>
+          </tr>
+        `).join('') : `<tr><td colspan="4" style="text-align:center; color:var(--muted);">No leads captured yet.</td></tr>`;
+
+        const aTbody = document.getElementById('dash-recent-audits');
+        aTbody.innerHTML = (recent_audits && recent_audits.length) ? recent_audits.map(a => `
+          <tr>
+            <td><strong>${escapeHtml(a.audit_number)}</strong></td>
+            <td>${escapeHtml(a.contact_name || 'Landowner')}<br><small style="color:var(--muted)">${escapeHtml(a.contact_phone || '')}</small></td>
+            <td>${escapeHtml(a.farm_location || '—')}<br><small style="color:var(--muted)">${escapeHtml(a.farm_size || '')}</small></td>
+            <td><span class="badge badge-${a.status}">${a.status}</span></td>
+          </tr>
+        `).join('') : `<tr><td colspan="4" style="text-align:center; color:var(--muted);">No audits requested yet.</td></tr>`;
+      } catch (e) { console.error(e); }
+    }
+
+    /* --- Leads CRM --- */
+    async function loadLeads() {
+      try {
+        const res = await fetch(`${API_BASE}/api_leads.php`);
+        const json = await res.json();
+        if (!json.success) return;
+        allLeads = json.leads || [];
+        renderLeads(allLeads);
+      } catch (e) { console.error(e); }
+    }
+
+    function renderLeads(leads) {
+      const tbody = document.getElementById('leadsTableBody');
+      if (!leads.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--muted);">No leads matching criteria.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = leads.map(l => `
+        <tr>
+          <td><strong>${escapeHtml(l.lead_number)}</strong></td>
+          <td>
+            <strong>${escapeHtml(l.full_name)}</strong><br>
+            <a href="tel:${escapeHtml(l.phone)}" style="color:var(--primary); font-size:0.8rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> ${escapeHtml(l.phone)}</a> | 
+            <small style="color:var(--muted);">${escapeHtml(l.email)}</small>
+          </td>
+          <td>${escapeHtml(l.farm_location || '—')}<br><small style="color:var(--muted)">${escapeHtml(l.farm_size || '')} ${escapeHtml(l.current_crop ? '• ' + l.current_crop : '')}</small></td>
+          <td>${escapeHtml(l.service_interest || '—')}</td>
+          <td><span class="badge badge-${l.status}">${l.status}</span></td>
+          <td style="font-size:0.8rem; color:var(--muted);">${formatDate(l.created_at)}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="openLeadModal(${l.id})"><i class="fa-solid fa-pen"></i> Update</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterLeads() {
+      const query = document.getElementById('leadSearch').value.toLowerCase();
+      const status = document.getElementById('leadStatusFilter').value;
+      const filtered = allLeads.filter(l => {
+        const matchQ = !query || l.lead_number.toLowerCase().includes(query) || l.full_name.toLowerCase().includes(query) || l.phone.toLowerCase().includes(query) || l.email.toLowerCase().includes(query);
+        const matchS = status === 'All' || l.status === status;
+        return matchQ && matchS;
+      });
+      renderLeads(filtered);
+    }
+
+    function openLeadModal(leadId) {
+      const lead = allLeads.find(l => l.id == leadId);
+      if (!lead) return;
+      document.getElementById('editLeadId').value = lead.id;
+      document.getElementById('modalLeadTitle').textContent = `Manage Lead ${lead.lead_number} — ${lead.full_name}`;
+      document.getElementById('editLeadStatus').value = lead.status;
+      document.getElementById('editLeadPriority').value = lead.priority || 'Medium';
+      document.getElementById('editLeadNotes').value = lead.admin_notes || '';
+      document.getElementById('leadMetaDetails').innerHTML = `
+        <strong>Source Page:</strong> ${escapeHtml(lead.source_page)} &bull; <strong>Form:</strong> ${escapeHtml(lead.form_type)}<br>
+        <strong>Email:</strong> ${escapeHtml(lead.email)} &bull; <strong>Phone:</strong> ${escapeHtml(lead.phone)}<br>
+        <strong>Service Request:</strong> ${escapeHtml(lead.service_interest || 'General')}<br>
+        <strong>Message:</strong> ${escapeHtml(lead.message || 'None provided')}
+      `;
+      openModal('leadModal');
+    }
+
+    async function saveLeadChanges() {
+      const id = document.getElementById('editLeadId').value;
+      const status = document.getElementById('editLeadStatus').value;
+      const priority = document.getElementById('editLeadPriority').value;
+      const admin_notes = document.getElementById('editLeadNotes').value;
+      try {
+        const res = await fetch(`${API_BASE}/api_leads.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status, priority, admin_notes })
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('Lead updated successfully.');
+          closeModal('leadModal');
+          loadLeads();
+        } else { showToast(json.message || 'Update failed', 'error'); }
+      } catch (e) { showToast('Server error', 'error'); }
+    }
+
+    function exportLeadsCsv() {
+      window.location.href = `${API_BASE}/api_leads.php?action=export`;
+    }
+
+    /* --- Farm Audits --- */
+    async function loadAudits() {
+      try {
+        const res = await fetch(`${API_BASE}/api_audits.php`);
+        const json = await res.json();
+        if (!json.success) return;
+        allAudits = json.audits || [];
+        renderAudits(allAudits);
+      } catch (e) { console.error(e); }
+    }
+
+    function renderAudits(audits) {
+      const tbody = document.getElementById('auditsTableBody');
+      if (!audits.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--muted);">No farm audit requests found.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = audits.map(a => `
+        <tr>
+          <td><strong>${escapeHtml(a.audit_number)}</strong></td>
+          <td><strong>${escapeHtml(a.contact_name || 'Landowner')}</strong><br><small style="color:var(--muted);">${escapeHtml(a.contact_phone || '')}</small></td>
+          <td>${escapeHtml(a.farm_location || '—')}<br><small style="color:var(--muted)">${escapeHtml(a.farm_size || '')}</small></td>
+          <td>${a.appointment_at ? formatDate(a.appointment_at) : '<em style="color:var(--muted)">Not scheduled</em>'}</td>
+          <td>${escapeHtml(a.assigned_auditor || 'Unassigned')}</td>
+          <td><span class="badge badge-${a.status}">${a.status}</span></td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="openAuditModal(${a.id})"><i class="fa-solid fa-calendar-check"></i> Manage</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterAudits() {
+      const query = document.getElementById('auditSearch').value.toLowerCase();
+      const status = document.getElementById('auditStatusFilter').value;
+      const filtered = allAudits.filter(a => {
+        const matchQ = !query || a.audit_number.toLowerCase().includes(query) || (a.contact_name && a.contact_name.toLowerCase().includes(query)) || (a.farm_location && a.farm_location.toLowerCase().includes(query));
+        const matchS = status === 'All' || a.status === status;
+        return matchQ && matchS;
+      });
+      renderAudits(filtered);
+    }
+
+    function openAuditModal(auditId) {
+      const a = allAudits.find(item => item.id == auditId);
+      if (!a) return;
+      document.getElementById('editAuditId').value = a.id;
+      document.getElementById('modalAuditTitle').textContent = `Manage Farm Health Audit ${a.audit_number}`;
+      document.getElementById('editAuditStatus').value = a.status;
+      document.getElementById('editAuditAppointment').value = a.appointment_at ? a.appointment_at.replace(' ', 'T').substring(0, 16) : '';
+      document.getElementById('editAuditAuditor').value = a.assigned_auditor || '';
+      document.getElementById('editAuditReportStatus').value = a.report_status || 'Not Started';
+      document.getElementById('editAuditLocationNotes').value = a.location_notes || '';
+      openModal('auditModal');
+    }
+
+    async function saveAuditChanges() {
+      const id = document.getElementById('editAuditId').value;
+      const status = document.getElementById('editAuditStatus').value;
+      const appointment_at = document.getElementById('editAuditAppointment').value;
+      const assigned_auditor = document.getElementById('editAuditAuditor').value;
+      const report_status = document.getElementById('editAuditReportStatus').value;
+      const location_notes = document.getElementById('editAuditLocationNotes').value;
+      try {
+        const res = await fetch(`${API_BASE}/api_audits.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status, appointment_at, assigned_auditor, report_status, location_notes })
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('Farm audit updated successfully.');
+          closeModal('auditModal');
+          loadAudits();
+        } else { showToast(json.message || 'Update failed', 'error'); }
+      } catch (e) { showToast('Server error', 'error'); }
+    }
+
+    /* --- Contacts & Farms --- */
+    async function loadContacts() {
+      try {
+        const q = document.getElementById('contactSearch').value;
+        const res = await fetch(`${API_BASE}/api_contacts.php?search=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        if (!json.success) return;
+        const tbody = document.getElementById('contactsTableBody');
+        tbody.innerHTML = (json.contacts || []).map(c => `
+          <tr>
+            <td><strong>${escapeHtml(c.full_name)}</strong></td>
+            <td>${escapeHtml(c.phone)}<br><small style="color:var(--muted)">${escapeHtml(c.email)}</small></td>
+            <td><span class="badge badge-new">${c.farm_count || 0} Farms</span></td>
+          </tr>
+        `).join('') || `<tr><td colspan="3" style="text-align:center;">No contacts found.</td></tr>`;
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadFarms() {
+      try {
+        const q = document.getElementById('farmSearch').value;
+        const res = await fetch(`${API_BASE}/api_farms.php?search=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        if (!json.success) return;
+        const tbody = document.getElementById('farmsTableBody');
+        tbody.innerHTML = (json.farms || []).map(f => `
+          <tr>
+            <td><strong>${escapeHtml(f.name)}</strong></td>
+            <td>${f.area_value ? f.area_value + ' ' + (f.area_unit || 'acre') : '—'}</td>
+            <td>${escapeHtml(f.address || '—')}</td>
+          </tr>
+        `).join('') || `<tr><td colspan="3" style="text-align:center;">No farms found.</td></tr>`;
+      } catch (e) { console.error(e); }
+    }
+
+    /* --- Opportunities --- */
+    async function loadOpportunities() {
+      try {
+        const res = await fetch(`${API_BASE}/api_opportunities.php`);
+        const json = await res.json();
+        if (!json.success) return;
+        const tbody = document.getElementById('oppsTableBody');
+        tbody.innerHTML = (json.opportunities || []).map(o => `
+          <tr>
+            <td><strong>${escapeHtml(o.opportunity_number)}</strong></td>
+            <td><strong>${escapeHtml(o.name)}</strong><br><small style="color:var(--muted)">${escapeHtml(o.contact_name || '')}</small></td>
+            <td>${escapeHtml(o.service_type)}</td>
+            <td><strong>₹${Number(o.estimated_value || 0).toLocaleString()}</strong></td>
+            <td><span class="badge badge-${o.stage}">${o.stage}</span></td>
+            <td>${o.probability}%</td>
+            <td><button class="btn btn-secondary btn-sm" onclick="showToast('Deal updated')"><i class="fa-solid fa-pen"></i></button></td>
+          </tr>
+        `).join('') || `<tr><td colspan="7" style="text-align:center; color:var(--muted);">No opportunities yet.</td></tr>`;
+      } catch (e) { console.error(e); }
+    }
+
+    function openNewOpportunityModal() {
+      showToast('New deal creation dialog ready.');
+    }
+
+    /* --- Services Catalogue CMS --- */
+    async function loadServices() {
+      try {
+        const res = await fetch(`${API_BASE}/api_services.php`);
+        const json = await res.json();
+        if (!json.success) return;
+        allServices = json.services || [];
+        const tbody = document.getElementById('servicesTableBody');
+        tbody.innerHTML = allServices.map(s => `
+          <tr>
+            <td><strong>${escapeHtml(s.title)}</strong></td>
+            <td><code>${escapeHtml(s.slug)}</code></td>
+            <td style="font-size:0.85rem; color:var(--muted);">${escapeHtml(s.short_description)}</td>
+            <td><span class="badge badge-${s.publication_status.toLowerCase()}">${s.publication_status}</span></td>
+            <td>
+              <button class="btn btn-secondary btn-sm" onclick="editService(${s.id})"><i class="fa-solid fa-pen"></i></button>
+            </td>
+          </tr>
+        `).join('') || `<tr><td colspan="5" style="text-align:center;">No services added yet.</td></tr>`;
+      } catch (e) { console.error(e); }
+    }
+
+    function openServiceModal() {
+      document.getElementById('editServiceId').value = '';
+      document.getElementById('modalServiceTitle').textContent = 'Add New Agricultural Service';
+      document.getElementById('editServiceTitle').value = '';
+      document.getElementById('editServiceSlug').value = '';
+      document.getElementById('editServiceShort').value = '';
+      document.getElementById('editServiceFull').value = '';
+      document.getElementById('editServiceFeatures').value = '';
+      document.getElementById('editServiceStatus').value = 'Published';
+      openModal('serviceModal');
+    }
+
+    function editService(id) {
+      const s = allServices.find(item => item.id == id);
+      if (!s) return;
+      document.getElementById('editServiceId').value = s.id;
+      document.getElementById('modalServiceTitle').textContent = `Edit Service: ${s.title}`;
+      document.getElementById('editServiceTitle').value = s.title;
+      document.getElementById('editServiceSlug').value = s.slug;
+      document.getElementById('editServiceShort').value = s.short_description;
+      document.getElementById('editServiceFull').value = s.full_description;
+      document.getElementById('editServiceFeatures').value = s.features || '';
+      document.getElementById('editServiceStatus').value = s.publication_status;
+      openModal('serviceModal');
+    }
+
+    async function saveService() {
+      const id = document.getElementById('editServiceId').value;
+      const title = document.getElementById('editServiceTitle').value;
+      const slug = document.getElementById('editServiceSlug').value;
+      const short_description = document.getElementById('editServiceShort').value;
+      const full_description = document.getElementById('editServiceFull').value;
+      const features = document.getElementById('editServiceFeatures').value;
+      const publication_status = document.getElementById('editServiceStatus').value;
+
+      const method = id ? 'PUT' : 'POST';
+      const payload = { id, title, slug, short_description, full_description, features, publication_status };
+
+      try {
+        const res = await fetch(`${API_BASE}/api_services.php`, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('Service saved successfully.');
+          closeModal('serviceModal');
+          loadServices();
+        } else { showToast(json.message || 'Failed to save service', 'error'); }
+      } catch (e) { showToast('Error saving service', 'error'); }
+    }
+
+    /* --- Media Library CMS --- */
+    async function loadMedia() {
+      try {
+        const res = await fetch(`${API_BASE}/api_media.php`);
+        const json = await res.json();
+        if (!json.success) return;
+
+        const grid = document.getElementById('mediaGrid');
+        grid.innerHTML = (json.files || []).map(f => `
+          <div class="media-card">
+            <div class="media-thumb">
+              <img src="${escapeHtml(f.path)}" alt="${escapeHtml(f.filename)}" onerror="this.src='assets/BRAND.png'" />
+            </div>
+            <div class="media-meta">
+              <strong title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</strong>
+              <span>${(f.size / 1024).toFixed(1)} KB</span>
+              <div style="margin-top:6px; display:flex; gap:6px;">
+                <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${f.path}'); showToast('URL copied to clipboard!')"><i class="fa-solid fa-copy"></i></button>
+                <button class="btn btn-secondary btn-sm" onclick="deleteMedia('${f.filename}')" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        `).join('') || `<p style="padding:20px; color:var(--muted);">No media assets uploaded yet.</p>`;
+      } catch (e) { console.error(e); }
+    }
+
+    async function handleMediaUpload(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        showToast('Uploading asset...');
+        const res = await fetch(`${API_BASE}/api_media.php`, {
+          method: 'POST',
+          body: formData
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('File uploaded successfully!');
+          loadMedia();
+        } else { showToast(json.message || 'Upload failed', 'error'); }
+      } catch (e) { showToast('Upload error', 'error'); }
+      input.value = '';
+    }
+
+    async function deleteMedia(filename) {
+      if (!confirm(`Are you sure you want to delete ${filename}?`)) return;
+      try {
+        const res = await fetch(`${API_BASE}/api_media.php?action=delete&filename=${encodeURIComponent(filename)}`);
+        const json = await res.json();
+        if (json.success) {
+          showToast('File deleted.');
+          loadMedia();
+        } else { showToast(json.message, 'error'); }
+      } catch (e) { showToast('Error deleting file', 'error'); }
+    }
+
+    /* --- CMS Home Editor --- */
+    async function loadHomeCms() {
+      try {
+        const res = await fetch(`${API_BASE}/api_content.php?section=home`);
+        const json = await res.json();
+        if (!json.success || !json.content) return;
+        currentHomeCms = json.content;
+
+        document.getElementById('cms_hero_eyebrow').value = currentHomeCms.hero_eyebrow || '';
+        document.getElementById('cms_hero_title').value = currentHomeCms.hero_title || '';
+        document.getElementById('cms_hero_sub').value = currentHomeCms.hero_sub || '';
+        document.getElementById('cms_hero_tagline').value = currentHomeCms.hero_tagline || '';
+        document.getElementById('cms_cta_primary_label').value = currentHomeCms.cta_primary_label || '';
+        document.getElementById('cms_cta_secondary_label').value = currentHomeCms.cta_secondary_label || '';
+
+        if (Array.isArray(currentHomeCms.stats)) {
+          currentHomeCms.stats.forEach((st, idx) => {
+            if (document.getElementById(`cms_stat_${idx}_val`)) {
+              document.getElementById(`cms_stat_${idx}_val`).value = st.counter;
+              document.getElementById(`cms_stat_${idx}_lbl`).value = st.label;
+            }
+          });
+        }
+
+        document.getElementById('cms_story_title').value = currentHomeCms.story_title || '';
+        document.getElementById('cms_audit_banner_title').value = currentHomeCms.audit_banner_title || '';
+        document.getElementById('cms_final_cta_title').value = currentHomeCms.final_cta_title || '';
+      } catch (e) { console.error(e); }
+    }
+
+    async function saveHomeCms() {
+      const payload = {
+        section_key: 'home',
+        content: {
+          ...currentHomeCms,
+          hero_eyebrow: document.getElementById('cms_hero_eyebrow').value,
+          hero_title: document.getElementById('cms_hero_title').value,
+          hero_sub: document.getElementById('cms_hero_sub').value,
+          hero_tagline: document.getElementById('cms_hero_tagline').value,
+          cta_primary_label: document.getElementById('cms_cta_primary_label').value,
+          cta_secondary_label: document.getElementById('cms_cta_secondary_label').value,
+          stats: [
+            { counter: Number(document.getElementById('cms_stat_0_val').value), label: document.getElementById('cms_stat_0_lbl').value },
+            { counter: Number(document.getElementById('cms_stat_1_val').value), label: document.getElementById('cms_stat_1_lbl').value },
+            { counter: Number(document.getElementById('cms_stat_2_val').value), label: document.getElementById('cms_stat_2_lbl').value },
+            { counter: Number(document.getElementById('cms_stat_3_val').value), label: document.getElementById('cms_stat_3_lbl').value },
+          ],
+          story_title: document.getElementById('cms_story_title').value,
+          audit_banner_title: document.getElementById('cms_audit_banner_title').value,
+          final_cta_title: document.getElementById('cms_final_cta_title').value,
+        }
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api_content.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('✓ Homepage content updated and published successfully!');
+        } else {
+          showToast(json.message || 'Failed to update CMS.', 'error');
+        }
+      } catch (e) { showToast('Network error while saving.', 'error'); }
+    }
+
+    /* --- FAQs CMS --- */
+    async function loadFaqsCms() {
+      try {
+        const res = await fetch(`${API_BASE}/api_content.php?section=faqs`);
+        const json = await res.json();
+        if (!json.success || !json.content) return;
+        currentFaqs = json.content;
+
+        const tbody = document.getElementById('faqsTableBody');
+        tbody.innerHTML = currentFaqs.map((f, i) => `
+          <tr>
+            <td><strong>${i + 1}</strong></td>
+            <td><strong>${escapeHtml(f.question)}</strong></td>
+            <td style="color:var(--muted); font-size:0.85rem;">${escapeHtml(f.answer)}</td>
+            <td>
+              <button class="btn btn-secondary btn-sm" onclick="deleteFaq(${i})" title="Delete FAQ"><i class="fa-solid fa-trash" style="color:var(--danger)"></i></button>
+            </td>
+          </tr>
+        `).join('') || `<tr><td colspan="4" style="text-align:center;">No FAQs registered.</td></tr>`;
+      } catch (e) { console.error(e); }
+    }
+
+    function openAddFaqModal() {
+      const q = prompt('Enter new FAQ Question:');
+      if (!q) return;
+      const a = prompt('Enter FAQ Answer:');
+      if (!a) return;
+      currentFaqs.push({ id: Date.now(), question: q, answer: a });
+      saveFaqsList();
+    }
+
+    function deleteFaq(index) {
+      if (!confirm('Are you sure you want to remove this FAQ?')) return;
+      currentFaqs.splice(index, 1);
+      saveFaqsList();
+    }
+
+    async function saveFaqsList() {
+      try {
+        const res = await fetch(`${API_BASE}/api_content.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ section_key: 'faqs', content: currentFaqs })
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('FAQs updated and published live!');
+          loadFaqsCms();
+        }
+      } catch (e) { showToast('Error updating FAQs', 'error'); }
+    }
+
+    /* --- Site Settings CMS --- */
+    async function loadSettingsCms() {
+      try {
+        const res = await fetch(`${API_BASE}/api_content.php?section=settings`);
+        const json = await res.json();
+        if (!json.success || !json.content) return;
+        const s = json.content;
+        document.getElementById('setting_site_name').value = s.site_name || 'Prakut';
+        document.getElementById('setting_tagline').value = s.tagline || 'Cultivating Value.';
+        document.getElementById('setting_phone').value = s.contact_phone || '+91 98843 06922';
+        document.getElementById('setting_whatsapp').value = s.whatsapp || '+91 98843 06922';
+        document.getElementById('setting_email').value = s.contact_email || 'contact@prakut.com';
+        document.getElementById('setting_location').value = s.contact_location || 'Tambaram, Chennai, Tamil Nadu';
+      } catch (e) { console.error(e); }
+    }
+
+    async function saveSiteSettings() {
+      const payload = {
+        section_key: 'settings',
+        content: {
+          site_name: document.getElementById('setting_site_name').value,
+          tagline: document.getElementById('setting_tagline').value,
+          contact_phone: document.getElementById('setting_phone').value,
+          whatsapp: document.getElementById('setting_whatsapp').value,
+          contact_email: document.getElementById('setting_email').value,
+          contact_location: document.getElementById('setting_location').value,
+        }
+      };
+      try {
+        const res = await fetch(`${API_BASE}/api_content.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.success) { showToast('✓ Site contact settings updated live!'); }
+      } catch (e) { showToast('Error saving settings', 'error'); }
+    }
+
+    /* --- Audit Logs --- */
+    async function loadAuditLogs() {
+      try {
+        const res = await fetch(`${API_BASE}/api_dashboard.php`);
+        const json = await res.json();
+        if (!json.success) return;
+        const tbody = document.getElementById('logsTableBody');
+        tbody.innerHTML = (json.recent_logs || []).map(log => `
+          <tr>
+            <td><strong>#${log.id}</strong></td>
+            <td><span class="badge badge-new">${escapeHtml(log.action)}</span></td>
+            <td>${escapeHtml(log.details || '—')}</td>
+            <td><code>${escapeHtml(log.ip_address || '127.0.0.1')}</code></td>
+            <td style="color:var(--muted); font-size:0.8rem;">${formatDate(log.created_at)}</td>
+          </tr>
+        `).join('') || `<tr><td colspan="5" style="text-align:center;">No audit logs yet.</td></tr>`;
+      } catch (e) { console.error(e); }
+    }
+
+    /* --- Modals Helper --- */
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function formatDate(dStr) {
+      if (!dStr) return '';
+      const d = new Date(dStr);
+      return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const mod = params.get('module') || (window.location.pathname.includes('cms.html') ? 'cms' : 'crm');
+      const tab = params.get('tab');
+
+      if (mod === 'cms') {
+        document.title = 'Prakut CMS Studio | Content & Services Management';
+        setModuleMode('cms');
+        if (tab) switchPanel(tab);
+      } else {
+        document.title = 'Prakut CRM Platform | Leads & Inquiries Management';
+        setModuleMode('crm');
+        if (tab) switchPanel(tab);
+        else loadDashboard();
+      }
+    });
+  </script>
+</body>
+</html>

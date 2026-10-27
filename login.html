@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | Prakut Admin CRM & CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #1B7D3C;
+      --primary-dark: #145E2D;
+      --soil: #5D3A1A;
+      --sage: #A8D5BA;
+      --bg: #F5F7F4;
+      --card: #FFFFFF;
+      --text: #1C2421;
+      --muted: #5F6B65;
+      --border: #DFE5DF;
+      --danger: #D32F2F;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'IBM Plex Sans', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #13221B 0%, #1E372A 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: var(--text);
+    }
+    .login-card {
+      background: var(--card);
+      width: 100%;
+      max-width: 420px;
+      padding: 40px 36px;
+      border-radius: 12px;
+      box-shadow: 0 20px 48px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .brand-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 20px rgba(27,125,60,0.35);
+    }
+    .brand-header h1 { font-family: 'Fraunces', serif; font-size: 1.7rem; color: #13221B; margin-bottom: 4px; }
+    .brand-header p { font-size: 0.82rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; }
+    .form-control {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(27,125,60,0.15); }
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+    .btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .error-msg {
+      background: #FEE2E2;
+      color: var(--danger);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .hint-box {
+      margin-top: 24px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #F6F8F6;
+      border: 1px solid #E2E8E2;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .hint-box code { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--primary-dark); }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="brand-header">
+      <div class="brand-icon"><i class="fa-solid fa-seedling"></i></div>
+      <h1>Prakut Admin</h1>
+      <p>Internal CRM & CMS Portal</p>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Staff Email Address</label>
+        <input type="email" class="form-control" id="email" value="admin@prakut.com" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" id="password" value="admin123" required />
+      </div>
+      <button type="submit" class="btn-submit" id="btnSubmit">
+        <span>Sign In to Dashboard</span> <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <div class="hint-box">
+      <strong>Default Credentials:</strong><br>
+      Email: <code>admin@prakut.com</code><br>
+      Password: <code>admin123</code>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const err = document.getElementById('errorMsg');
+      const btn = document.getElementById('btnSubmit');
+      err.style.display = 'none';
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...`;
+
+      try {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        const res = await fetch('auth.php?action=login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const json = await res.json();
+        if (json.success && json.token) {
+          localStorage.setItem('prakut_token', json.token);
+          localStorage.setItem('prakut_user', JSON.stringify(json.user));
+          window.location.href = 'admin.html';
+        } else {
+          err.textContent = json.message || 'Invalid email or password.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.innerHTML = `<span>Sign In to Dashboard</span> <i class="fa-solid fa-arrow-right"></i>`;
+        }
+      } catch (e) {
+        err.textContent = 'Server connection failed. Ensure Apache & MySQL are running in XAMPP.';
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = `<span>Sign In to Dashboard</span> <i class="fa-solid fa-arrow-right"></i>`;
+      }
+    });
+  </script>
+</body>
+</html>
