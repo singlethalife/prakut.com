@@ -24,20 +24,21 @@ function db(): PDO
 
     if ($pdo === null) {
         $port = DB_PORT ?: '5432';
-        $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', DB_HOST, $port, DB_NAME);
+        $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s;sslmode=require', DB_HOST, $port, DB_NAME);
 
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
+                PDO::ATTR_PERSISTENT         => false,
             ]);
         } catch (PDOException $e) {
             error_log('[prakut] DB connection failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => 'Database service unavailable. Please verify MySQL is running in XAMPP.',
+                'message' => 'Database service unavailable. Please verify Supabase PostgreSQL connection settings.',
             ]);
             exit;
         }
