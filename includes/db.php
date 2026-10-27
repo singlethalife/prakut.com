@@ -23,8 +23,8 @@ function db(): PDO
     static $pdo = null;
 
     if ($pdo === null) {
-        $port = DB_PORT ?: '3306';
-        $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', DB_HOST, $port, DB_NAME);
+        $port = DB_PORT ?: '5432';
+        $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', DB_HOST, $port, DB_NAME);
 
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, [
