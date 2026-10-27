@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: prakut
+    env: php
+    plan: starter
+    region: oregon
+    buildCommand: "composer install --no-dev"
+    startCommand: "php -S 0.0.0.0:$PORT -t ."
+    envVars:
+      - key: DB_DRIVER
+        value: pgsql
+      - key: DB_HOST
+        value: db.ngkazhrdemwvpubwvaxa.supabase.co
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_NAME
+        value: postgres
+      - key: DB_USER
+        value: postgres
+      - key: DB_PASS
+        value: prakut.com@@
+      - key: JWT_SECRET
+        value: prakut_crm_cms_super_secret_jwt_key_2026_9884306922
+      - key: SESSION_TTL
+        value: "86400"
+      - key: ADMIN_NOTIFY_EMAIL
+        value: contact@prakut.com
+      - key: APP_NAME
+        value: Prakut Farm Transformation
